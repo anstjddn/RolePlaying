@@ -45,8 +45,6 @@ public class newplayerMove : MonoBehaviour
 
     private void Move()
     {
-        
-
 
         if(movedir.magnitude == 0)
         {
@@ -97,5 +95,4 @@ public class newplayerMove : MonoBehaviour
     {
         iswalk = value.isPressed;
     }
-
 }

@@ -7,11 +7,16 @@ using UnityEngine.UI;
 
 public class PlayerMover : MonoBehaviour
 {
+
+    [SerializeField] bool Debug;
     [SerializeField] float walkspeed;
     [SerializeField] float Runspeed;
     [SerializeField] float Jumpspeed;
+    [SerializeField] float WalkStepRange;
+    [SerializeField] float RunStepRange;
     private float curspeed;
 
+    
 
     private Animator anim;
     private float yspeed;
@@ -30,6 +35,7 @@ public class PlayerMover : MonoBehaviour
         Move();
         Fall();
     }
+    float Laststeptime = 0.5f;
     private void Move()
     {
 
@@ -63,10 +69,25 @@ public class PlayerMover : MonoBehaviour
         // 안움직이면 look을 0취급
        // transform.rotation = lookratation;
         transform.rotation = Quaternion.Lerp(transform.rotation, lookratation, 0.1f);
-      
+
+        Laststeptime -= Time.deltaTime;
+        if (Laststeptime < 0)
+        {
+            Laststeptime = 0.5f;
+            GenerateFootStepSound();
+        }
+    }
+    private void GenerateFootStepSound()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, walk ? WalkStepRange : RunStepRange);
+        foreach(Collider collider in colliders)
+        {
+            ISoundable soundable = collider.GetComponent<ISoundable>();
+            soundable?.Listen(transform);
+        }
     }
 
-    private void OnMove(InputValue value)
+    public void OnMove(InputValue value)
     {
         movedir.x = value.Get<Vector2>().x;
         movedir.z = value.Get<Vector2>().y;
@@ -94,5 +115,16 @@ public class PlayerMover : MonoBehaviour
     {
         walk = value.isPressed;
     }
- 
+    private void OnDrawGizmosSelected()
+    {
+        if (!Debug)
+        {
+            return;
+        }
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, WalkStepRange);
+        Gizmos.DrawWireSphere(transform.position, RunStepRange);
+
+    }
+
 }
