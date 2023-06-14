@@ -6,7 +6,7 @@ public class FieldofView : MonoBehaviour
 {
     [SerializeField] float Range;
     [SerializeField, Range(0f, 360f)] float angle;
-    [SerializeField] LayerMask obstacleMask;
+    [SerializeField] LayerMask obstacleMask;        //Àå¾Ö¹°
     [SerializeField] LayerMask TargetMask;
 
     private void Update()
